@@ -24,7 +24,7 @@ export async function onRequestPost({request,env}){
  if(!user?.id)return json({error:'Для автоматической отправки откройте библиотеку через Telegram-бота. В браузере можно скопировать заявку вручную.'},400);
  const id=new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+crypto.randomUUID().slice(0,8).toUpperCase();
  const t=TARIFFS[tariff];const lines=['📚 Новая заявка #'+id,'','👧 Ребёнок: '+esc(childName),'Возраст: '+age,'Коллекция: '+esc(collection),'История: '+esc(story),'Повод: '+esc(occasion),'Тариф: '+t.name,'Стиль: '+esc(illustrationStyle||'Не указан'),'Стоимость: '+t.price+' ₽','Пожелания: '+esc(details||'нет'),'','Telegram ID: '+user.id,'Клиент: '+esc(user.first_name||'')+(user.username?' (@'+esc(user.username)+')':''),'','⏳ Ожидает согласования и оплаты. Не начинать работу до оплаты.'];
- const res=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:env.TELEGRAM_ADMIN_CHAT_ID,text:lines.join('\n')})});
+ const res=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:env.TELEGRAM_ADMIN_CHAT_ID,text:lines.join('\n'),reply_markup:{inline_keyboard:[[{text:'✅ Принять',callback_data:'order:accepted:'+user.id},{text:'💳 Оплачен',callback_data:'order:paid:'+user.id}],[{text:'🎨 В работе',callback_data:'order:working:'+user.id},{text:'📖 Готов',callback_data:'order:ready:'+user.id}]]}})});
  if(!res.ok)return json({error:'Не удалось передать заявку. Попробуйте ещё раз или скопируйте её.'},502);
  return json({ok:true,orderId:id});
 }
