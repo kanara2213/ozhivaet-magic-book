@@ -39,10 +39,12 @@ export async function onRequestPost({request,env}){
   }else if(input&&!input.startsWith('/')){
    answer='Спасибо за сообщение! 💛 Для выбора сказки используйте кнопку «📖 Открыть библиотеку». Если вам нужна помощь, нажмите «💬 Помощь».';
   }
-  if(answer){await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:answer,reply_markup:keyboard});return json({ok:true})}
+  if(answer){const inline={inline_keyboard:[[{text:'📖 Открыть библиотеку сказок',web_app:{url}}],[{text:'✨ Как заказать',callback_data:'info:how'},{text:'💎 Тарифы',callback_data:'info:prices'}],[{text:'💌 Помощь',callback_data:'info:help'}]]};await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:answer,reply_markup:keyboard});if(/^\/(start|menu)(?:@\w+)?(?:\s|$)/i.test(input)){await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:'✦ ВАША СКАЗКА НАЧИНАЕТСЯ ЗДЕСЬ ✦\n\nВыберите, с чего начать:',reply_markup:inline})}return json({ok:true})}
  }
  const cb=body?.callback_query;
  if(!cb)return json({ok:true});
+ const info=String(cb.data||'').match(/^info:(how|prices|help)$/);
+ if(info){const replies={how:'✨ Откройте библиотеку, выберите сюжет и тариф, заполните анкету и прикрепите фотографии. После подтверждения заказа согласуем оплату.',prices:'💎 Тарифы Люми:\n🌱 Мини-история — 500 ₽\n✨ Моя сказка — 1 490 ₽\n👑 Книга чудес — 2 990 ₽',help:'💌 Напишите свой вопрос прямо в этот чат. Студия ответит вам здесь.'};await tg(env.TELEGRAM_BOT_TOKEN,'answerCallbackQuery',{callback_query_id:cb.id});await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:cb.message.chat.id,text:replies[info[1]]});return json({ok:true})}
  const contact=String(cb.data||'').match(/^contact:(\d{1,20})$/);
  if(contact){
   const admin=String(env.TELEGRAM_ADMIN_CHAT_ID);
