@@ -8,6 +8,12 @@ export async function onRequestPost({request,env}){
  const secret=await secretFor(env.TELEGRAM_BOT_TOKEN);
  if(request.headers.get('X-Telegram-Bot-Api-Secret-Token')!==secret)return json({ok:false},403);
  let body;try{body=await request.json()}catch{return json({ok:false},400)}
+ const msg=body?.message;
+ if(msg&&String(msg.chat?.type)==='private'&&/^\\/(start|help)(?:@\\w+)?(?:\\s|$)/i.test(String(msg.text||''))){
+  const url=new URL(request.url).origin;
+  await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:'✨ Добро пожаловать в Волшебную библиотеку Люми!\\n\\nЗдесь ваш ребёнок станет героем собственной иллюстрированной сказки. Выберите историю, посмотрите готовую книгу Лизы и оформите заказ прямо в приложении. 📖\\n\\nНажмите кнопку ниже — искать приложение не нужно!',reply_markup:{inline_keyboard:[[{text:'📖 Открыть библиотеку сказок',web_app:{url}}]]}});
+  return json({ok:true});
+ }
  const cb=body?.callback_query;
  if(!cb)return json({ok:true});
  const parts=String(cb.data||'').split(':');
