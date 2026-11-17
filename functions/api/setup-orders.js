@@ -22,6 +22,8 @@ export async function onRequestPost({request,env}){
  const result=await res.json();if(!result.ok)return json({error:'Telegram не принял настройку: '+String(result.description||'')},502);
  const menu=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/setChatMenuButton',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({menu_button:{type:'web_app',text:'📖 Открыть библиотеку',web_app:{url:url.origin}}})});
  const menuResult=await menu.json();
- return json({ok:true,menuConfigured:!!menuResult.ok});
+ const commands=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/setMyCommands',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({commands:[{command:'start',description:'✨ Главное меню библиотеки'},{command:'menu',description:'📖 Выбрать сказку'},{command:'help',description:'💬 Как заказать и помощь'}]})});
+ const commandsResult=await commands.json();
+ return json({ok:true,menuConfigured:!!menuResult.ok,commandsConfigured:!!commandsResult.ok,botUsername:(await (await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/getMe')).json()).result?.username||null});
 }
 export async function onRequestGet(){return new Response('Method Not Allowed',{status:405})}
