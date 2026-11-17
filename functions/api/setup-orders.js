@@ -24,6 +24,14 @@ export async function onRequestPost({request,env}){
  const menuResult=await menu.json();
  const commands=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/setMyCommands',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({commands:[{command:'start',description:'✨ Главное меню библиотеки'},{command:'menu',description:'📖 Выбрать сказку'},{command:'help',description:'💬 Как заказать и помощь'}]})});
  const commandsResult=await commands.json();
- return json({ok:true,menuConfigured:!!menuResult.ok,commandsConfigured:!!commandsResult.ok,botUsername:(await (await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/getMe')).json()).result?.username||null});
+ const profile=[
+  ['setMyName',{name:'Люми ✨ Волшебная библиотека',language_code:'ru'}],
+  ['setMyDescription',{description:'✨ Добро пожаловать в Волшебную библиотеку Люми! Здесь ваш ребёнок становится главным героем персональной иллюстрированной сказки. 📖 Выбирайте историю, загружайте фотографии, оформляйте заказ и следите за его готовностью. 💌 По любому вопросу можно написать прямо сюда.',language_code:'ru'}],
+  ['setMyShortDescription',{short_description:'📖 Персональные сказки с вашим ребёнком в главной роли ✨',language_code:'ru'}]
+ ];
+ const profileResults={};
+ for(const [method,payload] of profile){try{const response=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/'+method,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const result=await response.json();profileResults[method]=!!result.ok}catch{profileResults[method]=false}}
+
+ return json({ok:true,menuConfigured:!!menuResult.ok,commandsConfigured:!!commandsResult.ok,profileConfigured:Object.values(profileResults).every(Boolean),profileResults,botUsername:(await (await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/getMe')).json()).result?.username||null});
 }
 export async function onRequestGet(){return new Response('Method Not Allowed',{status:405})}
