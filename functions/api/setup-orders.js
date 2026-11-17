@@ -18,8 +18,10 @@ export async function onRequestPost({request,env}){
  const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ozhivaet-webhook:'+env.TELEGRAM_BOT_TOKEN));
  const secret=[...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('');
  const url=new URL(request.url);const webhookUrl=url.origin+'/api/telegram-webhook';
- const res=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/setWebhook',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:webhookUrl,secret_token:secret,allowed_updates:['callback_query'],drop_pending_updates:false})});
+ const res=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/setWebhook',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:webhookUrl,secret_token:secret,allowed_updates:['callback_query','message'],drop_pending_updates:false})});
  const result=await res.json();if(!result.ok)return json({error:'Telegram не принял настройку: '+String(result.description||'')},502);
- return json({ok:true});
+ const menu=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/setChatMenuButton',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({menu_button:{type:'web_app',text:'📖 Открыть библиотеку',web_app:{url:url.origin}}})});
+ const menuResult=await menu.json();
+ return json({ok:true,menuConfigured:!!menuResult.ok});
 }
 export async function onRequestGet(){return new Response('Method Not Allowed',{status:405})}
