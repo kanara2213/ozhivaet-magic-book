@@ -174,7 +174,7 @@ function drawCollections(){document.getElementById('collectionCards').innerHTML=
 function openNewYear(){const i=collections.findIndex(c=>c.id==='newyear');if(i<0){go('collections');return}chosenCollection=i;chosenStory=0;drawStories();go('stories')}
 const storyMotifs=['☁','☾','✧','✦','❀','✩','♧','✧'];
 const sleepStoryImages=['sleep-cloud.png.png','sleep-train.png.png','sleep-star.png.png','sleep-book.png.png'];
-const adventureStoryImages=['adventure-forest.png','adventure-key.png','adventure-island.png','adventure-map.png'];
+const adventureStoryImages=['adventure-forest.png.png','adventure-key.png.png','adventure-island.png.png','adventure-map.png.png'];
 const babyStoryImages=['baby-bunny.png.png','baby-bear.png.png','baby-bell.png.png','baby-book.png.png'];
 function storyArtwork(collection,index){if(!['sleep','baby','adventure'].includes(collection))return storyIllustration(collection,index);const images=collection==='sleep'?sleepStoryImages:collection==='baby'?babyStoryImages:adventureStoryImages;const fallback=storyIllustration(collection,index);return '<img class="illustrated-story-image" src="'+images[Math.min(index,3)]+'" alt="" loading="lazy" decoding="async" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'"><span class="illustrated-story-fallback" style="display:none">'+fallback+'</span>'}
 function storyIllustration(collection,index){if(collection!=='sleep')return storyMotifs[index%storyMotifs.length];const common='fill="none" stroke-linecap="round" stroke-linejoin="round"';const paths=[
