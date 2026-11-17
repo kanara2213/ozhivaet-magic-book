@@ -11,6 +11,20 @@ export async function onRequestPost({request,env}){
  const msg=body?.message;
  if(msg&&String(msg.chat?.type)==='private'){
   const input=String(msg.text||'').trim();
+  const adminId=String(env.TELEGRAM_ADMIN_CHAT_ID);
+  const replyText=String(msg.reply_to_message?.text||msg.reply_to_message?.caption||'');
+  const relayTarget=replyText.match(/КЛИЕНТ_ID:\s*(\d{1,20})/);
+  if(String(msg.from?.id)===adminId&&relayTarget){
+   const sent=await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:relayTarget[1],text:'💌 Сообщение от студии Люми:\n\n'+input.slice(0,3500)});
+   await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:adminId,text:sent.ok?'✅ Сообщение покупателю отправлено.':'⚠️ Сообщение не доставлено. Возможно, клиент заблокировал бота.'});
+   return json({ok:true});
+  }
+  if(String(msg.from?.id)!==adminId&&input&&!input.startsWith('/')&&!['✨ Как заказать','💰 Цены и форматы','💬 Помощь','🏠 Меню'].includes(input)){
+   const received=await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:adminId,text:'💬 Сообщение от покупателя\nКЛИЕНТ_ID: '+msg.from.id+'\nИмя: '+String(msg.from.first_name||'').slice(0,80)+'\n\n'+input.slice(0,3000),reply_markup:{inline_keyboard:[[{text:'✉️ Ответить покупателю',callback_data:'contact:'+msg.from.id}]]}});
+   await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:received.ok?'💛 Ваше сообщение передано студии. Мы ответим здесь.':'Не удалось передать сообщение. Попробуйте позже.'});
+   return json({ok:true});
+  }
+
   const url=new URL(request.url).origin;
   const keyboard={keyboard:[[{text:'📖 Открыть библиотеку',web_app:{url}}],[{text:'✨ Как заказать'},{text:'💰 Цены и форматы'}],[{text:'💬 Помощь'}]],resize_keyboard:true,is_persistent:true};
   let answer='';
@@ -21,7 +35,7 @@ export async function onRequestPost({request,env}){
   }else if(input==='💰 Цены и форматы'){
    answer='💰 Наши тарифы\n\n🌱 Мини-история — 500 ₽\n✨ Моя сказка — 1 490 ₽\n👑 Книга чудес — 2 990 ₽\n\nПодробности и выбор тарифа — в библиотеке. Оплата согласовывается после заявки.';
   }else if(input==='💬 Помощь'){
-   answer='💬 Нужна помощь с выбором или заказом?\n\nПо вопросам заказа обратитесь к менеджеру студии через контакты в приложении. Если заказ уже оформлен, укажите его номер.\n\nДля выбора сказки нажмите «📖 Открыть библиотеку».';
+   answer='💬 Нужна помощь с выбором или заказом?\n\nНапишите ваш вопрос прямо сюда, в чат с ботом. Мы передадим его студии и ответим здесь. Если заказ уже оформлен, укажите его номер.\n\nДля выбора сказки нажмите «📖 Открыть библиотеку».';
   }else if(input&&!input.startsWith('/')){
    answer='Спасибо за сообщение! 💛 Для выбора сказки используйте кнопку «📖 Открыть библиотеку». Если вам нужна помощь, нажмите «💬 Помощь».';
   }
@@ -29,6 +43,14 @@ export async function onRequestPost({request,env}){
  }
  const cb=body?.callback_query;
  if(!cb)return json({ok:true});
+ const contact=String(cb.data||'').match(/^contact:(\d{1,20})$/);
+ if(contact){
+  const admin=String(env.TELEGRAM_ADMIN_CHAT_ID);
+  if(String(cb.from?.id)!==admin||String(cb.message?.chat?.id)!==admin){await tg(env.TELEGRAM_BOT_TOKEN,'answerCallbackQuery',{callback_query_id:cb.id,text:'Недостаточно прав',show_alert:true});return json({ok:true})}
+  await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:admin,text:'✉️ Ответ покупателю\nКЛИЕНТ_ID: '+contact[1]+'\n\nНапишите ответ именно через «Ответить» на это сообщение.',reply_markup:{force_reply:true,selective:true}});
+  await tg(env.TELEGRAM_BOT_TOKEN,'answerCallbackQuery',{callback_query_id:cb.id,text:'Напишите ответ на сообщение бота'});
+  return json({ok:true});
+ }
  const parts=String(cb.data||'').split(':');
  const [prefix,status,customerId]=parts;
  const admin=String(env.TELEGRAM_ADMIN_CHAT_ID);
@@ -38,7 +60,7 @@ export async function onRequestPost({request,env}){
  const previous=String(cb.message?.text||'');
  const withoutStatus=previous.replace(/\n\n📌 Статус:.*$/s,'');
  const text=withoutStatus+'\n\n📌 Статус: '+labels[status];
- const keyboard={inline_keyboard:[[{text:'✅ Принять',callback_data:'order:accepted:'+customerId},{text:'💳 Оплачен',callback_data:'order:paid:'+customerId}],[{text:'🎨 В работе',callback_data:'order:working:'+customerId},{text:'📖 Готов',callback_data:'order:ready:'+customerId}]]};
+ const keyboard={inline_keyboard:[[{text:'✅ Принять',callback_data:'order:accepted:'+customerId},{text:'💳 Оплачен',callback_data:'order:paid:'+customerId}],[{text:'🎨 В работе',callback_data:'order:working:'+customerId},{text:'📖 Готов',callback_data:'order:ready:'+customerId}],[{text:'💬 Связаться с клиентом',callback_data:'contact:'+customerId}]]};
  const edited=await tg(env.TELEGRAM_BOT_TOKEN,'editMessageText',{chat_id:admin,message_id:cb.message.message_id,text,reply_markup:keyboard});
  if(!edited.ok){await tg(env.TELEGRAM_BOT_TOKEN,'answerCallbackQuery',{callback_query_id:cb.id,text:'Не удалось изменить статус',show_alert:true});return json({ok:true})}
  let notice='';if(status==='accepted'||status==='paid'||status==='working'||status==='ready'){const sent=await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:customerId,text:'📚 OZHIVAET — Волшебная библиотека\n\n'+messages[status]});if(!sent.ok)notice=' (клиенту не доставлено)'}
