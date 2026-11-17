@@ -26,10 +26,10 @@ export async function onRequestPost({request,env}){
   }
 
   const url=new URL(request.url).origin;
-  const keyboard={keyboard:[[{text:'📖 Открыть библиотеку',web_app:{url}}],[{text:'✨ Как заказать'},{text:'💰 Цены и форматы'}],[{text:'💬 Помощь'}]],resize_keyboard:true,is_persistent:true};
+  const keyboard={keyboard:[[{text:'📖 Открыть библиотеку',web_app:{url}}],[{text:'🎁 Посмотреть пример',web_app:{url}}],[{text:'✨ Как заказать'},{text:'💰 Цены и форматы'}],[{text:'💬 Помощь'}]],resize_keyboard:true,is_persistent:true};
   let answer='';
   if(/^\/(start|menu|help)(?:@\w+)?(?:\s|$)/i.test(input)||input==='🏠 Меню'){
-   answer='✨ Добро пожаловать в Волшебную библиотеку Люми!\n\nЗдесь ваш ребёнок станет главным героем персональной иллюстрированной сказки.\n\n📖 Нажмите «Открыть библиотеку» внизу экрана, чтобы выбрать историю, полистать пример книги Лизы и оформить заказ.\n\nНе нужно вводить команды — все разделы доступны кнопками.';
+   answer='🐉 Привет! Я Люми — маленький дракончик, который хранит самые волшебные истории. ✨\n\nЗдесь ваш ребёнок может стать главным героем настоящей иллюстрированной сказки!\n\n📖 Выберите историю в библиотеке.\n🎁 Полистайте готовую книгу Лизы.\n📸 Добавьте фотографии и пожелания.\n💌 А если возникнет вопрос — просто напишите мне сюда.\n\nНажмите кнопку ниже, и сказка начнётся! 💛';
   }else if(input==='✨ Как заказать'){
    answer='✨ Как заказать сказку\n\n1. Нажмите «📖 Открыть библиотеку».\n2. Выберите коллекцию, историю и тариф.\n3. Заполните анкету ребёнка и отправьте заявку.\n4. Мы согласуем детали и оплату, а после подтверждения оплаты приступим к созданию книги.\n\nПример готовой сказки Лизы можно полистать в библиотеке.';
   }else if(input==='💰 Цены и форматы'){
@@ -39,7 +39,7 @@ export async function onRequestPost({request,env}){
   }else if(input&&!input.startsWith('/')){
    answer='Спасибо за сообщение! 💛 Для выбора сказки используйте кнопку «📖 Открыть библиотеку». Если вам нужна помощь, нажмите «💬 Помощь».';
   }
-  if(answer){const inline={inline_keyboard:[[{text:'📖 Открыть библиотеку сказок',web_app:{url}}],[{text:'✨ Как заказать',callback_data:'info:how'},{text:'💎 Тарифы',callback_data:'info:prices'}],[{text:'💌 Помощь',callback_data:'info:help'}]]};await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:answer,reply_markup:keyboard});if(/^\/(start|menu)(?:@\w+)?(?:\s|$)/i.test(input)){await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:'✦ ВАША СКАЗКА НАЧИНАЕТСЯ ЗДЕСЬ ✦\n\nВыберите, с чего начать:',reply_markup:inline})}return json({ok:true})}
+  if(answer){const inline={inline_keyboard:[[{text:'📖 Выбрать сказку',web_app:{url}}],[{text:'🎁 Полистать книгу Лизы',web_app:{url}}],[{text:'✨ Как заказать',callback_data:'info:how'},{text:'💎 Тарифы',callback_data:'info:prices'}],[{text:'💌 Задать вопрос',callback_data:'info:help'}]]};await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:answer,reply_markup:keyboard});if(/^\/(start|menu)(?:@\w+)?(?:\s|$)/i.test(input)||input==='🏠 Меню'){await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:'✦ ВАША СКАЗКА НАЧИНАЕТСЯ ЗДЕСЬ ✦\n\nВыберите, с чего начать:',reply_markup:inline})}return json({ok:true})}
  }
  const cb=body?.callback_query;
  if(!cb)return json({ok:true});
