@@ -9,10 +9,23 @@ export async function onRequestPost({request,env}){
  if(request.headers.get('X-Telegram-Bot-Api-Secret-Token')!==secret)return json({ok:false},403);
  let body;try{body=await request.json()}catch{return json({ok:false},400)}
  const msg=body?.message;
- if(msg&&String(msg.chat?.type)==='private'&&/^\\/(start|help)(?:@\\w+)?(?:\\s|$)/i.test(String(msg.text||''))){
+ if(msg&&String(msg.chat?.type)==='private'){
+  const input=String(msg.text||'').trim();
   const url=new URL(request.url).origin;
-  await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:'✨ Добро пожаловать в Волшебную библиотеку Люми!\\n\\nЗдесь ваш ребёнок станет героем собственной иллюстрированной сказки. Выберите историю, посмотрите готовую книгу Лизы и оформите заказ прямо в приложении. 📖\\n\\nНажмите кнопку ниже — искать приложение не нужно!',reply_markup:{inline_keyboard:[[{text:'📖 Открыть библиотеку сказок',web_app:{url}}]]}});
-  return json({ok:true});
+  const keyboard={keyboard:[[{text:'📖 Открыть библиотеку',web_app:{url}}],[{text:'✨ Как заказать'},{text:'💰 Цены и форматы'}],[{text:'💬 Помощь'}]],resize_keyboard:true,is_persistent:true};
+  let answer='';
+  if(/^\/(start|menu|help)(?:@\w+)?(?:\s|$)/i.test(input)||input==='🏠 Меню'){
+   answer='✨ Добро пожаловать в Волшебную библиотеку Люми!\n\nЗдесь ваш ребёнок станет главным героем персональной иллюстрированной сказки.\n\n📖 Нажмите «Открыть библиотеку» внизу экрана, чтобы выбрать историю, полистать пример книги Лизы и оформить заказ.\n\nНе нужно вводить команды — все разделы доступны кнопками.';
+  }else if(input==='✨ Как заказать'){
+   answer='✨ Как заказать сказку\n\n1. Нажмите «📖 Открыть библиотеку».\n2. Выберите коллекцию, историю и тариф.\n3. Заполните анкету ребёнка и отправьте заявку.\n4. Мы согласуем детали и оплату, а после подтверждения оплаты приступим к созданию книги.\n\nПример готовой сказки Лизы можно полистать в библиотеке.';
+  }else if(input==='💰 Цены и форматы'){
+   answer='💰 Наши тарифы\n\n🌱 Мини-история — 500 ₽\n✨ Моя сказка — 1 490 ₽\n👑 Книга чудес — 2 990 ₽\n\nПодробности и выбор тарифа — в библиотеке. Оплата согласовывается после заявки.';
+  }else if(input==='💬 Помощь'){
+   answer='💬 Нужна помощь с выбором или заказом?\n\nНапишите свой вопрос в этом чате. Если требуется ответ человека, укажите номер заявки — мы сможем быстрее разобраться.\n\nДля выбора сказки нажмите «📖 Открыть библиотеку».';
+  }else if(input&&!input.startsWith('/')){
+   answer='Спасибо за сообщение! 💛 Для выбора сказки используйте кнопку «📖 Открыть библиотеку». Если вам нужна помощь, нажмите «💬 Помощь».';
+  }
+  if(answer){await tg(env.TELEGRAM_BOT_TOKEN,'sendMessage',{chat_id:msg.chat.id,text:answer,reply_markup:keyboard});return json({ok:true})}
  }
  const cb=body?.callback_query;
  if(!cb)return json({ok:true});
