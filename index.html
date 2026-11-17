@@ -296,15 +296,43 @@ function storyIllustration(collection,index){if(collection!=='sleep')return stor
 '<path d="M16 47 23 17 49 9 55 42 37 53Z" fill="#f1d9b7" stroke="#f9e9cb" stroke-width="2"/><path d="M23 17 31 45M49 9 31 45M37 53 31 45" stroke="#c49db8" stroke-width="1.5"/><path d="M18 50q16 9 34 0" stroke="#ffe6ac" stroke-width="2"/><path d="M37 15 44 8" stroke="#ffe6ac" stroke-width="2"/>'
 ];return '<svg viewBox="0 0 68 64" width="65" height="62" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g '+common+'>'+paths[Math.min(index,3)]+'</g><g fill="#fff0b9"><circle cx="8" cy="8" r="1.5"/><circle cx="60" cy="15" r="1.7"/><circle cx="9" cy="55" r="1.2"/></g></svg>'}
 const storyDescriptions={
-sleep:['Добрая история о том, как найти свой уютный сон.','Волшебное путешествие по ночному небу.','Нежная сказка о звёздах, которые готовятся ко сну.'],
-baby:['Первое знакомство с солнечным утром.','Маленькое приключение о дружелюбии и первых словах.','Тихая сказка о звуках и добрых чудесах.'],
-adventure:['Тайная тропа ведёт к огонькам зачарованного леса.','Золотой ключ открывает путь к замку над облаками.','Путешествие по волшебному мосту к далёкому острову.'],
-feelings:['Как найти смелость в маленьком сердечке.','У каждого чувства есть свой цвет и смысл.','История о новых знакомствах и уверенности.'],
-gift:['История о заветном желании и неожиданном чуде.','Подарок, в котором скрывается настоящая магия.','Необычный праздник с удивительным сюрпризом.'],
-family:['Волшебный остров, где собирается вся семья.','Старинная шкатулка хранит тёплую тайну.','Путешествие, которое сближает родных.'],
-newyear:['Поможем ёлке вернуть её сияющую звезду.','Загадочное письмо приглашает в снежное королевство.','Ночью любимые игрушки отправляются в приключение.']
+sleep:[
+'Маленькое Облачко не может уснуть. Ребёнок отправляется с ним к звёздам и Луне, чтобы узнать, что тревожит друга, и помочь ему найти спокойный сон.',
+'Волшебный поезд увозит героя через станции сновидений. Когда один вагон теряет дорогу, ребёнок помогает пассажирам вернуться к самому уютному сну.',
+'Перед рассветом Люми замечает, что звёздочки не хотят засыпать. Вместе с ребёнком она находит для каждой звезды колыбельную и возвращает небу тишину.'
+],
+baby:[
+'Зайчонок впервые встречает утреннее солнышко, но боится выйти из домика. Ребёнок помогает ему сделать маленький смелый шаг навстречу новому дню.',
+'Мишка учится здороваться с лесными друзьями. Вместе с ребёнком он узнаёт, как простое «привет» помогает найти первых друзей.',
+'Люми находит колокольчик, который звучит только от добрых поступков. Ребёнок помогает ей разгадать его секрет среди знакомых звуков и маленьких чудес.'
+],
+adventure:[
+'В зачарованном лесу один за другим гаснут волшебные огоньки. Ребёнок идёт по таинственной тропе, находит причину и возвращает лесу свет.',
+'Герой находит золотой ключ, но облачный замок заперт не просто так. Разгадав подсказки и помогая новым друзьям, ребёнок открывает его главный секрет.',
+'Звёздный остров исчезает с ночной карты. Ребёнок отправляется через сияющий мост, преодолевает препятствия и помогает острову вновь найти своё место.'
+],
+feelings:[
+'Маленькое сердечко боится нового приключения. Вместе с Люми ребёнок учится замечать свой страх, просить поддержки и делать первый смелый шаг.',
+'Волшебная радуга потеряла цвета. Ребёнок знакомится с радостью, грустью, злостью и удивлением и узнаёт, что каждое чувство важно.',
+'Впереди у героя непривычный день, и всё кажется немного страшным. С помощью доброго друга ребёнок находит опору и открывает радость нового.'
+],
+gift:[
+'В особенный день герой загадывает желание, но волшебство исполняет его неожиданным образом. Путешествие помогает понять, что делает мечту по-настоящему ценной.',
+'Из волшебной мастерской исчез самый важный подарок. Ребёнок помогает мастерам найти его и узнаёт, почему забота дороже любой красивой коробки.',
+'Праздник начинается с загадочного приглашения. Следуя подсказкам, ребёнок собирает друзей и находит сюрприз, приготовленный специально для него.'
+],
+family:[
+'Семья попадает на остров, где тропинки появляются только благодаря совместным делам. Вместе родные находят путь к главному сокровищу — времени друг с другом.',
+'В бабушкиной шкатулке спрятаны необычные воспоминания. Ребёнок и близкие открывают их одно за другим и узнают тёплую семейную тайну.',
+'Обычная семейная прогулка превращается в приключение. Когда дорога домой исчезает, близкие помогают друг другу и находят путь благодаря дружбе и заботе.'
+],
+newyear:[
+'В канун праздника с ёлки исчезает главная звезда. Ребёнок и Люми идут по снежным следам, чтобы вернуть сияние до наступления Нового года.',
+'Таинственное письмо зовёт героя в снежное королевство, где пропало праздничное тепло. Добрые поступки помогают вернуть чудо его жителям.',
+'В новогоднюю ночь игрушки оживают, но одна из них теряет дорогу к ёлке. Ребёнок помогает ей вернуться до первого утреннего луча.'
+]
 };
-function drawStories(){const c=collections[chosenCollection];const screen=document.getElementById('stories');screen.className='screen'+(screen.classList.contains('active')?' active':'')+' world-'+c.id;screen.style.setProperty('--world-symbol',JSON.stringify(({sleep:'☾',baby:'♡',adventure:'✧',feelings:'❀',gift:'✦',family:'⌂',newyear:'❄'})[c.id]||'✦'));document.getElementById('storiesTitle').textContent=c.name;document.getElementById('storyCards').innerHTML=c.stories.map((story,i)=>`<button class="card story-card story-choice ${chosenStory===i?'selected':''}" aria-pressed="${chosenStory===i}" onclick="chosenStory=${i};drawStories()"><span class="story-medallion" aria-hidden="true"><span class="story-halo">✦</span><span class="story-motif">${storyArtwork(c.id,i)}</span><span class="story-spark">✧</span></span><span class="story-copy"><span class="story-name">${story}</span><span class="story-subtitle">${storyDescriptions[c.id]?.[i]||"Персонализируем историю под вашего ребёнка"}</span></span><span class="story-check" aria-hidden="true">${chosenStory===i?'✓':'›'}</span></button>`).join('')+`<button class="card story-card story-choice story-custom ${chosenStory===c.stories.length?'selected':''}" aria-pressed="${chosenStory===c.stories.length}" onclick="chosenStory=${c.stories.length};drawStories()"><span class="story-medallion" aria-hidden="true"><span class="story-halo">✦</span><span class="story-motif">${storyArtwork(c.id,3)}</span><span class="story-spark">✧</span></span><span class="story-copy"><span class="story-name">Придумать свою историю</span><span class="story-subtitle">Расскажите о вашей задумке в пожеланиях</span></span><span class="story-check" aria-hidden="true">${chosenStory===c.stories.length?'✓':'›'}</span></button>`}
+function drawStories(){const c=collections[chosenCollection];const screen=document.getElementById('stories');screen.className='screen'+(screen.classList.contains('active')?' active':'')+' world-'+c.id;screen.style.setProperty('--world-symbol',JSON.stringify(({sleep:'☾',baby:'♡',adventure:'✧',feelings:'❀',gift:'✦',family:'⌂',newyear:'❄'})[c.id]||'✦'));document.getElementById('storiesTitle').textContent=c.name;document.getElementById('storyCards').innerHTML=c.stories.map((story,i)=>`<button class="card story-card story-choice ${chosenStory===i?'selected':''}" aria-pressed="${chosenStory===i}" onclick="chosenStory=${i};drawStories()"><span class="story-medallion" aria-hidden="true"><span class="story-halo">✦</span><span class="story-motif">${storyArtwork(c.id,i)}</span><span class="story-spark">✧</span></span><span class="story-copy"><span class="story-name">${story}</span><span class="story-subtitle">${storyDescriptions[c.id]?.[i]||"История будет создана специально для вашего ребёнка"}</span></span><span class="story-check" aria-hidden="true">${chosenStory===i?'✓':'›'}</span></button>`).join('')+`<button class="card story-card story-choice story-custom ${chosenStory===c.stories.length?'selected':''}" aria-pressed="${chosenStory===c.stories.length}" onclick="chosenStory=${c.stories.length};drawStories()"><span class="story-medallion" aria-hidden="true"><span class="story-halo">✦</span><span class="story-motif">${storyArtwork(c.id,3)}</span><span class="story-spark">✧</span></span><span class="story-copy"><span class="story-name">Придумать свою историю</span><span class="story-subtitle">Индивидуальный сюжет по вашей идее: расскажите, что хотите видеть в сказке. Готового содержания здесь нет.</span></span><span class="story-check" aria-hidden="true">${chosenStory===c.stories.length?'✓':'›'}</span></button>`}
 
 const tariffs=[{name:'Мини-история',price:500,pages:3,pics:3,icon:'🌸',desc:'Короткая история по готовому сюжету · 1 ребёнок · без творческих правок'},{name:'Моя сказка',price:1490,pages:6,pics:6,icon:'✨',desc:'Персонализированный сюжет · 1 ребёнок · 1 правка текста и 1 небольшая правка иллюстрации',popular:true},{name:'Книга чудес',price:2990,pages:10,pics:10,icon:'👑',desc:'Индивидуальный сюжет · ребёнок и 1 близкий · 2 правки текста и 2 небольшие правки иллюстраций'}];const worlds=[{name:'Зачарованный лес',icon:'🦊',desc:'Тайные тропинки, добрые звери и волшебные открытия'},{name:'Волшебный замок',icon:'🏰',desc:'Загадки, дружба и настоящие чудеса'},{name:'Космическое путешествие',icon:'🚀',desc:'Звёзды, планеты и невероятные открытия'},{name:'Подводное королевство',icon:'🧜',desc:'Тайны океана и дружелюбные морские жители'},{name:'Новогоднее чудо',icon:'🎄',desc:'Снежная магия и самая добрая сказка'}];let chosenTariff=1,chosenWorld=0;
 function draw(){drawCollections();drawStories();document.getElementById('tariffCards').innerHTML=tariffs.map((t,i)=>`<button class="card ${chosenTariff===i?'selected':''}" onclick="chosenTariff=${i};draw()">${t.popular?'<span class="pill">Самый популярный</span>':''}<div class="row"><div><h3>${t.icon} ${t.name}</h3><small>${t.pages} стр. · иллюстрация на каждой странице + обложка<br>${t.desc}</small></div><span class="price">${t.price} ₽</span></div></button>`).join('');document.getElementById('worldCards').innerHTML=worlds.map((w,i)=>`<button class="card ${chosenWorld===i?'selected':''}" onclick="chosenWorld=${i};draw()"><div class="world"><span class="world-icon">${w.icon}</span><div><h3>${w.name}</h3><small>${w.desc}</small></div></div></button>`).join('')}
