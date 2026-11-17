@@ -32,6 +32,6 @@ export async function onRequestPost({request,env}){
  const profileResults={};
  for(const [method,payload] of profile){try{const response=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/'+method,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const result=await response.json();profileResults[method]=!!result.ok}catch{profileResults[method]=false}}
 
- return json({ok:true,menuConfigured:!!menuResult.ok,commandsConfigured:!!commandsResult.ok,profileConfigured:Object.values(profileResults).every(Boolean),profileResults,botUsername:(await (await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/getMe')).json()).result?.username||null});
+ const [me,webhook]=await Promise.all([fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/getMe').then(r=>r.json()),fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/getWebhookInfo').then(r=>r.json())]);return json({ok:true,menuConfigured:!!menuResult.ok,commandsConfigured:!!commandsResult.ok,profileConfigured:Object.values(profileResults).every(Boolean),profileResults,botUsername:me.result?.username||null,webhookUrl:webhook.result?.url||null,webhookPending:webhook.result?.pending_update_count||0,webhookError:webhook.result?.last_error_message||null});
 }
 export async function onRequestGet(){return new Response('Method Not Allowed',{status:405})}
